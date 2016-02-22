@@ -1,0 +1,26 @@
+apply plugin: "java"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+	eclipseLink { transitive = false }
+}
+
+ext.libs = [:]
+libs.eclipseLink = 'org.eclipse.persistence:eclipselink:2.6.2'
+
+dependencies {
+	compile 'com.h2database:h2:1.4.191'
+	compile libs.eclipseLink
+	eclipseLink libs.eclipseLink
+}
+
+task start(type: JavaExec) {
+	dependsOn build
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'M2MTest'
+    jvmArgs = ["-javaagent:${configurations.eclipseLink.singleFile}"]
+}
+
